@@ -524,8 +524,8 @@ section {
 }
 
 .about-image {
-    position: sticky;
-    top: 120px;
+    position: relative;
+    z-index: 1;
 }
 
 .about-image-placeholder {
@@ -559,6 +559,7 @@ section {
     position: relative;
     overflow: hidden;
     border: 2px solid rgba(255, 255, 255, 0.2);
+    z-index: 2;
 }
 
 .oab-badge::before {
@@ -1375,6 +1376,8 @@ ut Section - Additional Styles */
 
 .about-text {
     padding-top: var(--spacing-lg);
+    z-index: 1;
+    position: relative;
 }
 
 .section-header {
@@ -2796,30 +2799,33 @@ ro Buttons - Modern Design */
             0 16px 32px rgba(0, 0, 0, 0.1);
     }
 }/* Servi
-ces Carousel - Simplified */
+ces Carousel - Mobile First */
 .services-carousel {
     position: relative;
     width: 100%;
+    margin-top: var(--spacing-xl);
 }
 
 .carousel-container {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    width: 100%;
 }
 
 .services-wrapper {
     flex: 1;
     overflow: hidden;
+    width: 100%;
 }
 
 .services-track {
     display: flex;
     transition: transform 0.3s ease;
-    gap: var(--spacing-md);
+    width: 100%;
 }
 
-/* Service Cards */
+/* Mobile: 1 card per view */
 .service-card {
     flex: 0 0 100%;
     background: var(--color-white);
@@ -2827,8 +2833,8 @@ ces Carousel - Simplified */
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--color-border);
-    display: flex;
-    flex-direction: column;
+    margin-right: var(--spacing-md);
+    min-height: 400px;
 }
 
 .service-card:hover {
@@ -2900,8 +2906,8 @@ ces Carousel - Simplified */
     background: var(--color-white);
     border: 2px solid var(--color-primary);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2910,6 +2916,7 @@ ces Carousel - Simplified */
     color: var(--color-primary);
     box-shadow: var(--shadow-md);
     flex-shrink: 0;
+    z-index: 10;
 }
 
 .carousel-btn:hover {
@@ -2957,69 +2964,52 @@ ces Carousel - Simplified */
 /* Tablet: Show 2 cards */
 @media (min-width: 768px) {
     .service-card {
-        flex: 0 0 calc(50% - var(--spacing-lg) / 2);
+        flex: 0 0 calc(50% - var(--spacing-md));
+        margin-right: var(--spacing-md);
     }
     
     .carousel-btn {
-        width: 56px;
-        height: 56px;
+        width: 48px;
+        height: 48px;
     }
 }
 
 /* Desktop: Show 3 cards */
 @media (min-width: 1024px) {
     .service-card {
-        flex: 0 0 calc(33.333% - var(--spacing-lg) * 2 / 3);
+        flex: 0 0 calc(33.333% - var(--spacing-md));
     }
     
-    .services-track {
-        gap: var(--spacing-xl);
-    }
-    
-    .carousel-container {
-        gap: var(--spacing-xl);
+    .carousel-btn {
+        width: 52px;
+        height: 52px;
     }
 }
 
-/* Hide navigation on desktop when all cards are visible */
+/* Large Desktop: Show all cards in grid */
 @media (min-width: 1200px) {
+    .carousel-container {
+        display: block;
+    }
+    
     .carousel-btn,
     .carousel-indicators {
         display: none;
     }
     
+    .services-wrapper {
+        overflow: visible;
+    }
+    
     .services-track {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: var(--spacing-xl);
+        transform: none !important;
     }
     
     .service-card {
         flex: none;
-    }
-}
-
-/* Mobile specific adjustments */
-@media (max-width: 767px) {
-    .carousel-container {
-        gap: var(--spacing-md);
-    }
-    
-    .carousel-btn {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .service-card {
-        padding: var(--spacing-lg);
-    }
-    
-    .service-icon {
-        width: 56px;
-        height: 56px;
-    }
-    
-    .service-title {
-        font-size: var(--font-size-lg);
+        margin-right: 0;
     }
 }

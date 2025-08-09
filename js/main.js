@@ -4,6 +4,16 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Daniela Garcia Advocacia website loaded');
     
+    // Test mobile menu elements
+    const testBtn = document.querySelector('.mobile-menu-btn');
+    const testMenu = document.querySelector('.mobile-menu');
+    console.log('Initial test - Mobile elements:', {
+        btn: !!testBtn,
+        menu: !!testMenu,
+        btnVisible: testBtn ? window.getComputedStyle(testBtn).display : 'not found',
+        menuVisible: testMenu ? window.getComputedStyle(testMenu).display : 'not found'
+    });
+    
     // Initialize all components
     initializeNavigation();
     initializeWhatsApp();
@@ -21,14 +31,24 @@ function initializeNavigation() {
     
     // Mobile menu toggle
     if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', function() {
+        console.log('Mobile menu elements found, adding event listener');
+        mobileMenuBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const isActive = mobileMenu.classList.contains('active');
+            console.log('Menu button clicked, current state:', isActive);
             
             if (isActive) {
                 closeMobileMenu();
             } else {
                 openMobileMenu();
             }
+        });
+    } else {
+        console.log('Mobile menu elements not found:', {
+            btn: !!mobileMenuBtn,
+            menu: !!mobileMenu
         });
     }
     

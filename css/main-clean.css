@@ -2280,11 +2280,26 @@ pp Button Responsive */
     }
     
     .desktop-nav {
-        display: none;
+        display: none !important;
     }
     
     .mobile-menu-btn {
-        display: flex;
+        display: flex !important;
+    }
+}
+
+/* Hide mobile elements on desktop */
+@media (min-width: 768px) {
+    .mobile-nav {
+        display: none !important;
+    }
+    
+    .desktop-nav {
+        display: flex !important;
+    }
+    
+    .mobile-menu-btn {
+        display: none !important;
     }
 }
 

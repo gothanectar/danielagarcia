@@ -1943,11 +1943,11 @@ pp Button Responsive */
 /* Desktop Hero */
 @media (min-width: 1024px) {
     .hero-title {
-        font-size: 4rem;
+        font-size: 3.5rem;
     }
     
     .hero-subtitle-line {
-        font-size: var(--font-size-3xl);
+        font-size: var(--font-size-2xl);
     }
     
     .hero-content {
@@ -2700,41 +2700,18 @@ ro Buttons - Modern Design */
     .btn-hero-secondary::after {
         display: none;
     }
-}/* Large D
-esktop Hero - Extra Large Text */
+}
+
+/* Large Desktop Hero - Controlled Size */
 @media (min-width: 1280px) {
     .hero-title {
-        font-size: 5rem;
+        font-size: 4rem;
         letter-spacing: -0.02em;
     }
     
     .hero-subtitle-line {
-        font-size: 2.5rem;
+        font-size: var(--font-size-3xl);
         margin-top: var(--spacing-md);
-    }
-}
-
-/* Extra Large Desktop */
-@media (min-width: 1440px) {
-    .hero-title {
-        font-size: 6rem;
-        letter-spacing: -0.03em;
-    }
-    
-    .hero-subtitle-line {
-        font-size: 3rem;
-    }
-}
-
-/* Ultra Wide Screens */
-@media (min-width: 1920px) {
-    .hero-title {
-        font-size: 7rem;
-        letter-spacing: -0.04em;
-    }
-    
-    .hero-subtitle-line {
-        font-size: 3.5rem;
     }
 }/* Enhanced
  Hero Title Styling */
@@ -2819,41 +2796,39 @@ esktop Hero - Extra Large Text */
             0 16px 32px rgba(0, 0, 0, 0.1);
     }
 }/* Servi
-ces Carousel */
+ces Carousel - Simplified */
 .services-carousel {
     position: relative;
-    max-width: 100%;
-    overflow: hidden;
+    width: 100%;
 }
 
 .carousel-container {
-    position: relative;
     display: flex;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-sm);
 }
 
 .services-wrapper {
     flex: 1;
     overflow: hidden;
-    border-radius: var(--radius-lg);
 }
 
 .services-track {
     display: flex;
-    transition: transform 0.5s ease-in-out;
-    gap: var(--spacing-lg);
+    transition: transform 0.3s ease;
+    gap: var(--spacing-md);
 }
 
-/* Mobile: Show 1 card */
+/* Service Cards */
 .service-card {
     flex: 0 0 100%;
     background: var(--color-white);
-    padding: var(--spacing-xl);
+    padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    transition: all var(--transition-normal);
     border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
 }
 
 .service-card:hover {
@@ -2863,16 +2838,17 @@ ces Carousel */
 }
 
 .service-icon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
     border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
     color: white;
     transition: all var(--transition-normal);
+    flex-shrink: 0;
 }
 
 .service-card:hover .service-icon {
@@ -2924,8 +2900,8 @@ ces Carousel */
     background: var(--color-white);
     border: 2px solid var(--color-primary);
     border-radius: 50%;
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeWhatsApp();
     initializeContactForm();
     initializeScrollAnimations();
+    initializeServicesCarousel();
 });
 
 // Navigation functionality
@@ -734,4 +735,206 @@ if ('serviceWorker' in navigator) {
                 console.log('SW registration failed: ', registrationError);
             });
     });
+}//
+ Services Carousel Functionality
+function initializeServicesCarousel() {
+    const carousel = document.querySelector('.services-carousel');
+    if (!carousel) return;
+    
+    const track = carousel.querySelector('.services-track');
+    const cards = carousel.querySelectorAll('.service-card');
+    const prevBtn = carousel.querySelector('.carousel-prev');
+    const nextBtn = carousel.querySelector('.carousel-next');
+    const indicators = carousel.querySelectorAll('.indicator');
+    
+    let currentSlide = 0;
+    let cardsPerView = 1;
+    let totalSlides = cards.length;
+    
+    // Calculate cards per view based on screen size
+    function updateCardsPerView() {
+        const width = window.innerWidth;
+        if (width >= 1200) {
+            cardsPerView = totalSlides; // Show all cards on large screens
+        } else if (width >= 1024) {
+            cardsPerView = 3;
+        } else if (width >= 768) {
+            cardsPerView = 2;
+        } else {
+            cardsPerView = 1;
+        }
+        
+        // Update total slides based on cards per view
+        totalSlides = Math.ceil(cards.length / cardsPerView);
+        
+        // Reset to first slide if current slide is out of bounds
+        if (currentSlide >= totalSlides) {
+            currentSlide = 0;
+        }
+        
+        updateCarousel();
+        updateIndicators();
+        updateNavigationButtons();
+    }
+    
+    // Update carousel position
+    function updateCarousel() {
+        const translateX = -currentSlide * (100 / cardsPerView);
+        track.style.transform = `translateX(${translateX}%)`;
+    }
+    
+    // Update indicators
+    function updateIndicators() {
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentSlide);
+            indicator.style.display = index < totalSlides ? 'block' : 'none';
+        });
+    }
+    
+    // Update navigation buttons
+    function updateNavigationButtons() {
+        if (prevBtn && nextBtn) {
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            
+            // Hide buttons on large screens
+            const showButtons = window.innerWidth < 1200 && totalSlides > 1;
+            prevBtn.style.display = showButtons ? 'flex' : 'none';
+            nextBtn.style.display = showButtons ? 'flex' : 'none';
+        }
+    }
+    
+    // Go to specific slide
+    function goToSlide(slideIndex) {
+        currentSlide = Math.max(0, Math.min(slideIndex, totalSlides - 1));
+        updateCarousel();
+        updateIndicators();
+        updateNavigationButtons();
+    }
+    
+    // Previous slide
+    function prevSlide() {
+        if (currentSlide > 0) {
+            goToSlide(currentSlide - 1);
+        }
+    }
+    
+    // Next slide
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+            goToSlide(currentSlide + 1);
+        }
+    }
+    
+    // Event listeners
+    if (prevBtn) {
+        prevBtn.addEventListener('click', prevSlide);
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', nextSlide);
+    }
+    
+    // Indicator clicks
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            goToSlide(index);
+        });
+    });
+    
+    // Touch/swipe support for mobile
+    let startX = 0;
+    let endX = 0;
+    
+    track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    }, { passive: true });
+    
+    track.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        handleSwipe();
+    }, { passive: true });
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = startX - endX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swipe left - next slide
+                nextSlide();
+            } else {
+                // Swipe right - previous slide
+                prevSlide();
+            }
+        }
+    }
+    
+    // Keyboard navigation
+    carousel.addEventListener('keydown', (e) => {
+        switch (e.key) {
+            case 'ArrowLeft':
+                e.preventDefault();
+                prevSlide();
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                nextSlide();
+                break;
+            case 'Home':
+                e.preventDefault();
+                goToSlide(0);
+                break;
+            case 'End':
+                e.preventDefault();
+                goToSlide(totalSlides - 1);
+                break;
+        }
+    });
+    
+    // Auto-play (optional)
+    let autoPlayInterval;
+    
+    function startAutoPlay() {
+        if (totalSlides > 1) {
+            autoPlayInterval = setInterval(() => {
+                if (currentSlide < totalSlides - 1) {
+                    nextSlide();
+                } else {
+                    goToSlide(0); // Loop back to first slide
+                }
+            }, 5000); // 5 seconds
+        }
+    }
+    
+    function stopAutoPlay() {
+        if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+        }
+    }
+    
+    // Pause auto-play on hover
+    carousel.addEventListener('mouseenter', stopAutoPlay);
+    carousel.addEventListener('mouseleave', startAutoPlay);
+    
+    // Pause auto-play on focus
+    carousel.addEventListener('focusin', stopAutoPlay);
+    carousel.addEventListener('focusout', startAutoPlay);
+    
+    // Window resize handler
+    window.addEventListener('resize', debounce(updateCardsPerView, 250));
+    
+    // Initialize
+    updateCardsPerView();
+    
+    // Start auto-play (uncomment if desired)
+    // startAutoPlay();
+    
+    console.log('Services carousel initialized');
 }
+
+// Initialize carousel when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeServicesCarousel();
+});

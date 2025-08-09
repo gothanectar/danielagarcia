@@ -83,18 +83,24 @@ function openMobileMenu() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const mobileMenu = document.querySelector('.mobile-menu');
     
-    mobileMenuBtn.classList.add('active');
-    mobileMenu.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.classList.add('active');
+        mobileMenu.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        console.log('Mobile menu opened');
+    }
 }
 
 function closeMobileMenu() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const mobileMenu = document.querySelector('.mobile-menu');
     
-    mobileMenuBtn.classList.remove('active');
-    mobileMenu.classList.remove('active');
-    document.body.style.overflow = '';
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+        console.log('Mobile menu closed');
+    }
 }
 
 function updateActiveNavLink(activeHref) {
@@ -737,8 +743,10 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Services Carousel Functionality - Fixed
+// Services Carousel Functionality - Super Simple
 function initializeServicesCarousel() {
+    console.log('Initializing carousel...');
+    
     const carousel = document.querySelector('.services-carousel');
     if (!carousel) {
         console.log('Carousel not found');
@@ -751,48 +759,39 @@ function initializeServicesCarousel() {
     const nextBtn = carousel.querySelector('.carousel-next');
     const indicators = carousel.querySelectorAll('.indicator');
     
+    console.log('Found elements:', {
+        track: !!track,
+        cards: cards.length,
+        prevBtn: !!prevBtn,
+        nextBtn: !!nextBtn,
+        indicators: indicators.length
+    });
+    
     if (!track || !cards.length) {
-        console.log('Track or cards not found');
+        console.log('Missing required elements');
         return;
     }
     
     let currentSlide = 0;
-    let cardsPerView = 1;
+    const totalSlides = cards.length;
     
-    // Calculate cards per view based on screen size
-    function getCardsPerView() {
-        const width = window.innerWidth;
-        if (width >= 1200) return cards.length; // Show all
-        if (width >= 1024) return 3;
-        if (width >= 768) return 2;
-        return 1;
-    }
-    
-    // Update carousel
+    // Simple update function
     function updateCarousel() {
-        cardsPerView = getCardsPerView();
+        console.log('Updating carousel, slide:', currentSlide);
         
-        if (cardsPerView >= cards.length) {
-            // Desktop: show all cards
-            track.style.transform = 'translateX(0)';
-            if (prevBtn) prevBtn.style.display = 'none';
-            if (nextBtn) nextBtn.style.display = 'none';
-            return;
-        }
-        
-        // Mobile/Tablet: carousel mode
-        if (prevBtn) prevBtn.style.display = 'flex';
-        if (nextBtn) nextBtn.style.display = 'flex';
-        
-        const maxSlide = cards.length - cardsPerView;
-        currentSlide = Math.min(currentSlide, maxSlide);
-        
-        const translateX = -(currentSlide * (100 / cardsPerView));
+        // Simple mobile-first approach: always show 1 card on mobile
+        const translateX = -currentSlide * 100;
         track.style.transform = `translateX(${translateX}%)`;
         
         // Update buttons
-        if (prevBtn) prevBtn.disabled = currentSlide <= 0;
-        if (nextBtn) nextBtn.disabled = currentSlide >= maxSlide;
+        if (prevBtn) {
+            prevBtn.disabled = currentSlide <= 0;
+            prevBtn.style.opacity = currentSlide <= 0 ? '0.5' : '1';
+        }
+        if (nextBtn) {
+            nextBtn.disabled = currentSlide >= totalSlides - 1;
+            nextBtn.style.opacity = currentSlide >= totalSlides - 1 ? '0.5' : '1';
+        }
         
         // Update indicators
         indicators.forEach((indicator, index) => {
@@ -800,7 +799,7 @@ function initializeServicesCarousel() {
         });
     }
     
-    // Navigation functions
+    // Navigation
     function goToPrev() {
         if (currentSlide > 0) {
             currentSlide--;
@@ -809,51 +808,47 @@ function initializeServicesCarousel() {
     }
     
     function goToNext() {
-        const maxSlide = cards.length - cardsPerView;
-        if (currentSlide < maxSlide) {
+        if (currentSlide < totalSlides - 1) {
             currentSlide++;
             updateCarousel();
         }
     }
     
-    function goToSlide(index) {
-        const maxSlide = cards.length - cardsPerView;
-        currentSlide = Math.max(0, Math.min(index, maxSlide));
-        updateCarousel();
-    }
-    
     // Event listeners
     if (prevBtn) {
-        prevBtn.addEventListener('click', goToPrev);
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Prev clicked');
+            goToPrev();
+        });
     }
     
     if (nextBtn) {
-        nextBtn.addEventListener('click', goToNext);
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Next clicked');
+            goToNext();
+        });
     }
     
     // Indicator clicks
     indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => goToSlide(index));
+        indicator.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Indicator clicked:', index);
+            currentSlide = index;
+            updateCarousel();
+        });
     });
     
-    // Touch support
+    // Simple touch support
     let startX = 0;
-    let isDragging = false;
     
     track.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
-        isDragging = true;
-    }, { passive: true });
-    
-    track.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-    }, { passive: false });
+    });
     
     track.addEventListener('touchend', (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        
         const endX = e.changedTouches[0].clientX;
         const diff = startX - endX;
         
@@ -864,15 +859,12 @@ function initializeServicesCarousel() {
                 goToPrev();
             }
         }
-    }, { passive: true });
-    
-    // Window resize
-    window.addEventListener('resize', debounce(updateCarousel, 250));
+    });
     
     // Initialize
     updateCarousel();
     
-    console.log('Services carousel initialized with', cards.length, 'cards');
+    console.log('Carousel initialized successfully with', totalSlides, 'slides');
 }
 
 // Initialize carousel when DOM is loaded

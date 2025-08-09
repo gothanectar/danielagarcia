@@ -2181,7 +2181,7 @@ pp Button Responsive */
     }
 }
 
-/* Mobile Navigation Styles */
+/* Mobile Navigation Styles - Fixed */
 .mobile-menu {
     display: none;
     position: absolute;
@@ -2191,33 +2191,100 @@ pp Button Responsive */
     background: var(--color-white);
     box-shadow: var(--shadow-lg);
     z-index: 999;
-    transition: all var(--transition-normal);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
 }
 
 .mobile-menu.active {
     display: block;
-    animation: slideDown 0.3s ease-out;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Show mobile menu on mobile devices */
+.hamburger-line {
+    width: 24px;
+    height: 2px;
+    background: var(--color-dark);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+/* Hamburger Animation */
+.mobile-menu-btn.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-btn.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile Navigation List */
+.mobile-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: var(--spacing-md) 0;
+}
+
+.mobile-nav-item {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mobile-nav-item:last-child {
+    border-bottom: none;
+}
+
+.mobile-nav-link {
+    display: block;
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-normal);
+}
+
+.mobile-nav-link:hover {
+    background: var(--color-light);
+    color: var(--color-primary);
+}
+
+.mobile-whatsapp {
+    margin: var(--spacing-md) var(--spacing-lg);
+    width: calc(100% - 2 * var(--spacing-lg));
+    max-width: none;
+}
+
+/* Show mobile elements on mobile */
 @media (max-width: 767px) {
-    .mobile-menu {
+    .mobile-nav {
+        display: block;
+    }
+    
+    .desktop-nav {
         display: none;
     }
     
-    .mobile-menu.active {
-        display: block;
+    .mobile-menu-btn {
+        display: flex;
     }
 }
 
@@ -2825,7 +2892,7 @@ ces Carousel - Mobile First */
     width: 100%;
 }
 
-/* Mobile: 1 card per view */
+/* Service Cards - Mobile First */
 .service-card {
     flex: 0 0 100%;
     background: var(--color-white);
@@ -2833,8 +2900,11 @@ ces Carousel - Mobile First */
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--color-border);
-    margin-right: var(--spacing-md);
     min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .service-card:hover {

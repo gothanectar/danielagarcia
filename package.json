@@ -1,0 +1,36 @@
+{
+  "name": "daniela-garcia-advocacia",
+  "version": "1.0.0",
+  "description": "Site profissional da advogada Daniela Garcia - OAB 108061",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "build": "echo 'Static site - no build required'",
+    "start": "python -m http.server 8000"
+  },
+  "keywords": [
+    "advocacia",
+    "direito",
+    "advogada",
+    "juridico",
+    "daniela-garcia",
+    "oab",
+    "londrina",
+    "parana"
+  ],
+  "author": {
+    "name": "Daniela Garcia",
+    "email": "contato@danielagarcia.adv.br",
+    "url": "https://danielagarcia.vercel.app"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gothanectar/danielagarcia.git"
+  },
+  "homepage": "https://danielagarcia.vercel.app",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

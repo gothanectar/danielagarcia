@@ -2887,56 +2887,56 @@ body {
     }
 }
 
-/* Services Carousel - Functional Version */
+/* CARROSSEL SIMPLES E FUNCIONAL */
 .services-carousel {
-    position: relative;
     width: 100%;
-    margin-top: var(--spacing-xl);
-    user-select: none;
+    margin: 30px 0;
+    position: relative;
 }
 
 .carousel-container {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    width: 100%;
-    position: relative;
-    z-index: 10;
+    gap: 15px;
 }
 
 .services-wrapper {
     flex: 1;
     overflow: hidden;
-    position: relative;
-    border-radius: var(--radius-lg);
+    width: 100%;
+    border-radius: 12px;
 }
 
 .services-track {
     display: flex;
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform;
-    touch-action: pan-y pinch-zoom;
+    transition: transform 0.3s ease;
+    width: calc(100% * 11); /* 11 cards */
 }
 
-/* Service Cards - Mobile First */
 .service-card {
-    flex: 0 0 100%;
-    background: var(--color-white);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--color-border);
-    min-height: 420px;
-    display: flex;
-    flex-direction: column;
+    width: calc(100% / 11); /* Cada card ocupa 1/11 da largura total */
+    min-width: calc(100vw - 120px); /* Largura mínima para mobile */
+    flex: 0 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
     box-sizing: border-box;
-    position: relative;
+    margin-right: 0;
 }
 
-.service-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-primary);
+/* Mobile: cada card ocupa 100% da tela */
+@media (max-width: 768px) {
+    .service-card {
+        width: 100%;
+        min-width: 100%;
+        flex: 0 0 100%;
+    }
+    
+    .services-track {
+        width: calc(100% * 11);
+    }
 }
 
 .service-card:hover {

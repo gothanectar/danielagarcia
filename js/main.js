@@ -763,219 +763,105 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Services Carousel - Functional with Swipe
+// CARROSSEL SIMPLES QUE FUNCIONA DE VERDADE
 function initializeServicesCarousel() {
-    console.log('🎠 Initializing Services Carousel...');
+    console.log('🎠 Iniciando carrossel...');
     
-    const carousel = document.querySelector('.services-carousel');
-    if (!carousel) {
-        console.log('❌ Carousel container not found');
+    const track = document.querySelector('.services-track');
+    const cards = document.querySelectorAll('.service-card');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    
+    if (!track || !cards.length) {
+        console.log('❌ Elementos não encontrados');
         return;
     }
     
-    const track = carousel.querySelector('.services-track');
-    const cards = carousel.querySelectorAll('.service-card');
-    const prevBtn = carousel.querySelector('.carousel-prev');
-    const nextBtn = carousel.querySelector('.carousel-next');
-    const indicators = carousel.querySelectorAll('.indicator');
-    
-    console.log('🔍 Elements found:', {
-        track: !!track,
-        cards: cards.length,
-        prevBtn: !!prevBtn,
-        nextBtn: !!nextBtn,
-        indicators: indicators.length
-    });
-    
-    if (!track || cards.length === 0) {
-        console.log('❌ Missing track or cards');
-        return;
-    }
+    console.log(`📊 Encontrados ${cards.length} cards`);
     
     let currentSlide = 0;
     const totalSlides = cards.length;
-    let isAnimating = false;
     
-    // Update carousel position and UI
     function updateCarousel() {
-        if (isAnimating) return;
-        
-        console.log(`📍 Moving to slide ${currentSlide + 1}/${totalSlides}`);
-        
-        // Calculate transform
         const translateX = -currentSlide * 100;
         track.style.transform = `translateX(${translateX}%)`;
         
-        // Update navigation buttons
+        console.log(`📍 Slide atual: ${currentSlide + 1}/${totalSlides}`);
+        
+        // Atualizar botões
         if (prevBtn) {
-            prevBtn.disabled = currentSlide <= 0;
             prevBtn.style.opacity = currentSlide <= 0 ? '0.5' : '1';
-            prevBtn.style.cursor = currentSlide <= 0 ? 'not-allowed' : 'pointer';
+            prevBtn.disabled = currentSlide <= 0;
         }
-        
         if (nextBtn) {
-            nextBtn.disabled = currentSlide >= totalSlides - 1;
             nextBtn.style.opacity = currentSlide >= totalSlides - 1 ? '0.5' : '1';
-            nextBtn.style.cursor = currentSlide >= totalSlides - 1 ? 'not-allowed' : 'pointer';
-        }
-        
-        // Update indicators
-        indicators.forEach((indicator, index) => {
-            indicator.classList.toggle('active', index === currentSlide);
-        });
-        
-        // Prevent rapid clicking
-        isAnimating = true;
-        setTimeout(() => {
-            isAnimating = false;
-        }, 400);
-    }
-    
-    // Navigation functions
-    function goToPrevious() {
-        if (currentSlide > 0 && !isAnimating) {
-            currentSlide--;
-            updateCarousel();
-            console.log('⬅️ Previous slide');
+            nextBtn.disabled = currentSlide >= totalSlides - 1;
         }
     }
     
-    function goToNext() {
-        if (currentSlide < totalSlides - 1 && !isAnimating) {
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
             currentSlide++;
             updateCarousel();
-            console.log('➡️ Next slide');
+            console.log('➡️ Próximo slide');
         }
     }
     
-    function goToSlide(slideIndex) {
-        if (slideIndex >= 0 && slideIndex < totalSlides && slideIndex !== currentSlide && !isAnimating) {
-            currentSlide = slideIndex;
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
             updateCarousel();
-            console.log(`🎯 Jump to slide ${slideIndex + 1}`);
+            console.log('⬅️ Slide anterior');
         }
     }
     
-    // Button event listeners
-    if (prevBtn) {
-        console.log('🔗 Adding event listener to PREV button');
-        prevBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('⬅️ PREV button clicked!');
-            goToPrevious();
-        });
-    }
-    
+    // Event listeners DIRETOS
     if (nextBtn) {
-        console.log('🔗 Adding event listener to NEXT button');
-        nextBtn.addEventListener('click', (e) => {
+        nextBtn.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('➡️ NEXT button clicked!');
-            goToNext();
-        });
-        
-        // Additional check to ensure it's not a link
-        if (nextBtn.tagName === 'A') {
-            console.log('⚠️ WARNING: Next button is an A tag, should be BUTTON');
-        } else {
-            console.log('✅ Next button is correctly a BUTTON tag');
-        }
+            nextSlide();
+            return false;
+        };
+        console.log('✅ Botão NEXT configurado');
     }
     
-    // Indicator event listeners
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', (e) => {
+    if (prevBtn) {
+        prevBtn.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            goToSlide(index);
-        });
-    });
+            prevSlide();
+            return false;
+        };
+        console.log('✅ Botão PREV configurado');
+    }
     
-    // Touch/Swipe Support
-    let touchStartX = 0;
-    let touchEndX = 0;
-    let touchStartY = 0;
-    let touchEndY = 0;
-    let isSwiping = false;
-    
+    // Touch support simples
+    let startX = 0;
     track.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        isSwiping = true;
-        console.log('👆 Touch start');
-    }, { passive: true });
-    
-    track.addEventListener('touchmove', (e) => {
-        if (!isSwiping) return;
-        
-        const currentX = e.touches[0].clientX;
-        const currentY = e.touches[0].clientY;
-        const diffX = Math.abs(currentX - touchStartX);
-        const diffY = Math.abs(currentY - touchStartY);
-        
-        // If horizontal swipe is more significant than vertical, prevent scrolling
-        if (diffX > diffY && diffX > 10) {
-            e.preventDefault();
-        }
-    }, { passive: false });
+        startX = e.touches[0].clientX;
+    });
     
     track.addEventListener('touchend', (e) => {
-        if (!isSwiping) return;
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
         
-        touchEndX = e.changedTouches[0].clientX;
-        touchEndY = e.changedTouches[0].clientY;
-        
-        const diffX = touchStartX - touchEndX;
-        const diffY = Math.abs(touchStartY - touchEndY);
-        
-        // Only process horizontal swipes (ignore vertical scrolling)
-        if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
-            if (diffX > 0) {
-                // Swipe left - next slide
-                goToNext();
-                console.log('👈 Swipe left (next)');
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                nextSlide();
             } else {
-                // Swipe right - previous slide
-                goToPrevious();
-                console.log('👉 Swipe right (previous)');
+                prevSlide();
             }
-        }
-        
-        isSwiping = false;
-    }, { passive: true });
-    
-    // Keyboard navigation
-    carousel.addEventListener('keydown', (e) => {
-        switch (e.key) {
-            case 'ArrowLeft':
-                e.preventDefault();
-                goToPrevious();
-                break;
-            case 'ArrowRight':
-                e.preventDefault();
-                goToNext();
-                break;
         }
     });
     
-    // Make carousel focusable for keyboard navigation
-    carousel.setAttribute('tabindex', '0');
-    
-    // Initialize carousel
+    // Inicializar
     updateCarousel();
+    console.log('✅ Carrossel inicializado!');
     
-    console.log('✅ Carousel initialized successfully!');
-    console.log(`📊 Total slides: ${totalSlides}`);
-    
-    return {
-        goToNext,
-        goToPrevious,
-        goToSlide,
-        getCurrentSlide: () => currentSlide,
-        getTotalSlides: () => totalSlides
-    };
+    // Expor funções globalmente para debug
+    window.carouselNext = nextSlide;
+    window.carouselPrev = prevSlide;
 }
 
 // Initialize carousel when DOM is loaded

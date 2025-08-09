@@ -858,19 +858,30 @@ function initializeServicesCarousel() {
     
     // Button event listeners
     if (prevBtn) {
+        console.log('🔗 Adding event listener to PREV button');
         prevBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            console.log('⬅️ PREV button clicked!');
             goToPrevious();
         });
     }
     
     if (nextBtn) {
+        console.log('🔗 Adding event listener to NEXT button');
         nextBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            console.log('➡️ NEXT button clicked!');
             goToNext();
         });
+        
+        // Additional check to ensure it's not a link
+        if (nextBtn.tagName === 'A') {
+            console.log('⚠️ WARNING: Next button is an A tag, should be BUTTON');
+        } else {
+            console.log('✅ Next button is correctly a BUTTON tag');
+        }
     }
     
     // Indicator event listeners

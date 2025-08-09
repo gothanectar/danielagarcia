@@ -763,13 +763,13 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// Services Carousel Functionality - Super Simple
+// Services Carousel - Functional with Swipe
 function initializeServicesCarousel() {
-    console.log('Initializing carousel...');
+    console.log('🎠 Initializing Services Carousel...');
     
     const carousel = document.querySelector('.services-carousel');
     if (!carousel) {
-        console.log('Carousel not found');
+        console.log('❌ Carousel container not found');
         return;
     }
     
@@ -779,7 +779,7 @@ function initializeServicesCarousel() {
     const nextBtn = carousel.querySelector('.carousel-next');
     const indicators = carousel.querySelectorAll('.indicator');
     
-    console.log('Found elements:', {
+    console.log('🔍 Elements found:', {
         track: !!track,
         cards: cards.length,
         prevBtn: !!prevBtn,
@@ -787,104 +787,184 @@ function initializeServicesCarousel() {
         indicators: indicators.length
     });
     
-    if (!track || !cards.length) {
-        console.log('Missing required elements');
+    if (!track || cards.length === 0) {
+        console.log('❌ Missing track or cards');
         return;
     }
     
     let currentSlide = 0;
     const totalSlides = cards.length;
+    let isAnimating = false;
     
-    // Simple update function
+    // Update carousel position and UI
     function updateCarousel() {
-        console.log('Updating carousel, slide:', currentSlide);
+        if (isAnimating) return;
         
-        // Simple mobile-first approach: always show 1 card on mobile
+        console.log(`📍 Moving to slide ${currentSlide + 1}/${totalSlides}`);
+        
+        // Calculate transform
         const translateX = -currentSlide * 100;
         track.style.transform = `translateX(${translateX}%)`;
         
-        // Update buttons
+        // Update navigation buttons
         if (prevBtn) {
             prevBtn.disabled = currentSlide <= 0;
             prevBtn.style.opacity = currentSlide <= 0 ? '0.5' : '1';
+            prevBtn.style.cursor = currentSlide <= 0 ? 'not-allowed' : 'pointer';
         }
+        
         if (nextBtn) {
             nextBtn.disabled = currentSlide >= totalSlides - 1;
             nextBtn.style.opacity = currentSlide >= totalSlides - 1 ? '0.5' : '1';
+            nextBtn.style.cursor = currentSlide >= totalSlides - 1 ? 'not-allowed' : 'pointer';
         }
         
         // Update indicators
         indicators.forEach((indicator, index) => {
             indicator.classList.toggle('active', index === currentSlide);
         });
+        
+        // Prevent rapid clicking
+        isAnimating = true;
+        setTimeout(() => {
+            isAnimating = false;
+        }, 400);
     }
     
-    // Navigation
-    function goToPrev() {
-        if (currentSlide > 0) {
+    // Navigation functions
+    function goToPrevious() {
+        if (currentSlide > 0 && !isAnimating) {
             currentSlide--;
             updateCarousel();
+            console.log('⬅️ Previous slide');
         }
     }
     
     function goToNext() {
-        if (currentSlide < totalSlides - 1) {
+        if (currentSlide < totalSlides - 1 && !isAnimating) {
             currentSlide++;
             updateCarousel();
+            console.log('➡️ Next slide');
         }
     }
     
-    // Event listeners
+    function goToSlide(slideIndex) {
+        if (slideIndex >= 0 && slideIndex < totalSlides && slideIndex !== currentSlide && !isAnimating) {
+            currentSlide = slideIndex;
+            updateCarousel();
+            console.log(`🎯 Jump to slide ${slideIndex + 1}`);
+        }
+    }
+    
+    // Button event listeners
     if (prevBtn) {
         prevBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Prev clicked');
-            goToPrev();
+            e.stopPropagation();
+            goToPrevious();
         });
     }
     
     if (nextBtn) {
         nextBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Next clicked');
+            e.stopPropagation();
             goToNext();
         });
     }
     
-    // Indicator clicks
+    // Indicator event listeners
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log('Indicator clicked:', index);
-            currentSlide = index;
-            updateCarousel();
+            e.stopPropagation();
+            goToSlide(index);
         });
     });
     
-    // Simple touch support
-    let startX = 0;
+    // Touch/Swipe Support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    let isSwiping = false;
     
     track.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-    });
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isSwiping = true;
+        console.log('👆 Touch start');
+    }, { passive: true });
+    
+    track.addEventListener('touchmove', (e) => {
+        if (!isSwiping) return;
+        
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = Math.abs(currentX - touchStartX);
+        const diffY = Math.abs(currentY - touchStartY);
+        
+        // If horizontal swipe is more significant than vertical, prevent scrolling
+        if (diffX > diffY && diffX > 10) {
+            e.preventDefault();
+        }
+    }, { passive: false });
     
     track.addEventListener('touchend', (e) => {
-        const endX = e.changedTouches[0].clientX;
-        const diff = startX - endX;
+        if (!isSwiping) return;
         
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
+        touchEndX = e.changedTouches[0].clientX;
+        touchEndY = e.changedTouches[0].clientY;
+        
+        const diffX = touchStartX - touchEndX;
+        const diffY = Math.abs(touchStartY - touchEndY);
+        
+        // Only process horizontal swipes (ignore vertical scrolling)
+        if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
+            if (diffX > 0) {
+                // Swipe left - next slide
                 goToNext();
+                console.log('👈 Swipe left (next)');
             } else {
-                goToPrev();
+                // Swipe right - previous slide
+                goToPrevious();
+                console.log('👉 Swipe right (previous)');
             }
+        }
+        
+        isSwiping = false;
+    }, { passive: true });
+    
+    // Keyboard navigation
+    carousel.addEventListener('keydown', (e) => {
+        switch (e.key) {
+            case 'ArrowLeft':
+                e.preventDefault();
+                goToPrevious();
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                goToNext();
+                break;
         }
     });
     
-    // Initialize
+    // Make carousel focusable for keyboard navigation
+    carousel.setAttribute('tabindex', '0');
+    
+    // Initialize carousel
     updateCarousel();
     
-    console.log('Carousel initialized successfully with', totalSlides, 'slides');
+    console.log('✅ Carousel initialized successfully!');
+    console.log(`📊 Total slides: ${totalSlides}`);
+    
+    return {
+        goToNext,
+        goToPrevious,
+        goToSlide,
+        getCurrentSlide: () => currentSlide,
+        getTotalSlides: () => totalSlides
+    };
 }
 
 // Initialize carousel when DOM is loaded

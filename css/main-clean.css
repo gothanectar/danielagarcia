@@ -1185,8 +1185,9 @@ body {
 
 .contact-info {
     color: var(--color-white) !important;
-}/* Final 
-fix for contact info text color */
+}
+
+/* Final fix for contact info text color */
 .contact-info {
     background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%) !important;
     color: white !important;
@@ -1210,8 +1211,9 @@ fix for contact info text color */
 
 .contact-info a:hover {
     color: white !important;
-}/* Abo
-ut Section - Additional Styles */
+}
+
+/* About Section - Additional Styles */
 .about-credentials {
     margin-bottom: var(--spacing-2xl);
     padding: var(--spacing-2xl);
@@ -1489,8 +1491,9 @@ ut Section - Additional Styles */
         width: 48px;
         height: 48px;
     }
-}/* WhatsA
-pp Button Responsive */
+}
+
+/* WhatsApp Button Responsive */
 @media (max-width: 768px) {
     .whatsapp-float {
         bottom: 15px;
@@ -2378,8 +2381,9 @@ body {
     body {
         padding-top: 90px;
     }
-}/* He
-ro Buttons - Modern Design */
+}
+
+/* Hero Buttons - Modern Design */
 .btn-hero-primary,
 .btn-hero-secondary {
     display: flex;
@@ -2798,8 +2802,9 @@ ro Buttons - Modern Design */
         font-size: var(--font-size-3xl);
         margin-top: var(--spacing-md);
     }
-}/* Enhanced
- Hero Title Styling */
+}
+
+/* Enhanced Hero Title Styling */
 .hero-title {
     text-shadow: 
         0 2px 4px rgba(0, 0, 0, 0.3),
@@ -2880,31 +2885,35 @@ ro Buttons - Modern Design */
             0 8px 16px rgba(0, 0, 0, 0.2),
             0 16px 32px rgba(0, 0, 0, 0.1);
     }
-}/* Servi
-ces Carousel - Mobile First */
+}
+
+/* Services Carousel - Functional Version */
 .services-carousel {
     position: relative;
     width: 100%;
     margin-top: var(--spacing-xl);
+    user-select: none;
 }
 
 .carousel-container {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
     width: 100%;
 }
 
 .services-wrapper {
     flex: 1;
     overflow: hidden;
-    width: 100%;
+    position: relative;
+    border-radius: var(--radius-lg);
 }
 
 .services-track {
     display: flex;
-    transition: transform 0.3s ease;
-    width: 100%;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    touch-action: pan-y pinch-zoom;
 }
 
 /* Service Cards - Mobile First */
@@ -2915,11 +2924,17 @@ ces Carousel - Mobile First */
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--color-border);
-    min-height: 400px;
+    min-height: 420px;
     display: flex;
     flex-direction: column;
-    width: 100%;
     box-sizing: border-box;
+    position: relative;
+}
+
+.service-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
 }
 
 .service-card:hover {
@@ -2991,8 +3006,8 @@ ces Carousel - Mobile First */
     background: var(--color-white);
     border: 2px solid var(--color-primary);
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3002,6 +3017,13 @@ ces Carousel - Mobile First */
     box-shadow: var(--shadow-md);
     flex-shrink: 0;
     z-index: 10;
+    position: relative;
+    outline: none;
+}
+
+.carousel-btn:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .carousel-btn:hover {

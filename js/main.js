@@ -763,117 +763,95 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// CARROSSEL SUPER SIMPLES QUE FUNCIONA
+// CARROSSEL SIMPLES QUE FUNCIONA
 function initializeServicesCarousel() {
-    console.log('🎠 Iniciando carrossel...');
+    console.log('Iniciando carrossel simples...');
     
-    // Aguardar DOM estar pronto
-    setTimeout(() => {
-        const track = document.querySelector('.services-track');
-        const cards = document.querySelectorAll('.service-card');
-        const prevBtn = document.querySelector('.carousel-prev');
-        const nextBtn = document.querySelector('.carousel-next');
+    const track = document.querySelector('.services-track');
+    const cards = document.querySelectorAll('.service-card');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    
+    if (!track || !cards.length || !prevBtn || !nextBtn) {
+        console.log('Elementos não encontrados:', {track: !!track, cards: cards.length, prevBtn: !!prevBtn, nextBtn: !!nextBtn});
+        return;
+    }
+    
+    let currentIndex = 0;
+    const totalCards = cards.length;
+    
+    console.log(`Total de cards: ${totalCards}`);
+    
+    function updateCarousel() {
+        const translateX = -currentIndex * 100;
+        track.style.transform = `translateX(${translateX}%)`;
+        console.log(`Movendo para card ${currentIndex + 1}/${totalCards}`);
         
-        console.log('Elementos encontrados:', {
-            track: !!track,
-            cards: cards.length,
-            prevBtn: !!prevBtn,
-            nextBtn: !!nextBtn
-        });
-        
-        if (!track || !cards.length || !prevBtn || !nextBtn) {
-            console.log('❌ Elementos não encontrados');
-            return;
-        }
-        
-        let currentSlide = 0;
-        const totalSlides = cards.length;
-        
-        console.log(`📊 Total de slides: ${totalSlides}`);
-        
-        function updateCarousel() {
-            const translateX = -currentSlide * 100;
-            track.style.transform = `translateX(${translateX}%)`;
-            
-            console.log(`📍 Movendo para slide ${currentSlide + 1}/${totalSlides}`);
-            
-            // Atualizar botões
-            prevBtn.style.opacity = currentSlide <= 0 ? '0.5' : '1';
-            nextBtn.style.opacity = currentSlide >= totalSlides - 1 ? '0.5' : '1';
-            prevBtn.disabled = currentSlide <= 0;
-            nextBtn.disabled = currentSlide >= totalSlides - 1;
-        }
-        
-        function goNext() {
-            if (currentSlide < totalSlides - 1) {
-                currentSlide++;
-                updateCarousel();
-                console.log('➡️ Próximo slide');
-            } else {
-                console.log('❌ Já está no último slide');
-            }
-        }
-        
-        function goPrev() {
-            if (currentSlide > 0) {
-                currentSlide--;
-                updateCarousel();
-                console.log('⬅️ Slide anterior');
-            } else {
-                console.log('❌ Já está no primeiro slide');
-            }
-        }
-        
-        // Event listeners SIMPLES
-        nextBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🖱️ Clique no botão NEXT');
-            goNext();
-        });
-        
-        prevBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('🖱️ Clique no botão PREV');
-            goPrev();
-        });
-        
-        // Touch support
-        let startX = 0;
-        track.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        });
-        
-        track.addEventListener('touchend', (e) => {
-            const endX = e.changedTouches[0].clientX;
-            const diff = startX - endX;
-            
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    goNext();
-                } else {
-                    goPrev();
-                }
-            }
-        });
-        
-        // Inicializar
-        updateCarousel();
-        console.log('✅ Carrossel inicializado com sucesso!');
-        
-        // Funções globais para teste
-        window.testNext = goNext;
-        window.testPrev = goPrev;
-        window.testSlide = (n) => {
-            currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
+        // Atualizar botões
+        prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+        nextBtn.style.opacity = currentIndex === totalCards - 1 ? '0.5' : '1';
+    }
+    
+    function goNext() {
+        if (currentIndex < totalCards - 1) {
+            currentIndex++;
             updateCarousel();
-        };
+        }
+    }
+    
+    function goPrev() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+        }
+    }
+    
+    // Event listeners simples
+    nextBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Botão NEXT clicado');
+        goNext();
+        return false;
+    });
+    
+    prevBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Botão PREV clicado');
+        goPrev();
+        return false;
+    });
+    
+    // Touch support
+    let startX = 0;
+    track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+    
+    track.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
         
-    }, 500); // Aguardar 500ms para garantir que DOM está pronto
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                goNext();
+            } else {
+                goPrev();
+            }
+        }
+    });
+    
+    // Inicializar
+    updateCarousel();
+    console.log('Carrossel inicializado com sucesso!');
+    
+    // Para debug
+    window.debugCarousel = {
+        next: goNext,
+        prev: goPrev,
+        current: () => currentIndex,
+        total: totalCards
+    };
 }
 
-// Initialize carousel when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initializeServicesCarousel();
-});

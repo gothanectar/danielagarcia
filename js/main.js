@@ -763,7 +763,7 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// CARROSSEL SIMPLES QUE FUNCIONA DE VERDADE
+// CARROSSEL DEFINITIVO - SEM REDIRECIONAMENTO
 function initializeServicesCarousel() {
     console.log('🎠 Iniciando carrossel...');
     
@@ -815,28 +815,64 @@ function initializeServicesCarousel() {
         }
     }
     
-    // Event listeners DIRETOS
+    // MÚLTIPLOS EVENT LISTENERS para garantir funcionamento
     if (nextBtn) {
+        // Remover qualquer href que possa existir
+        nextBtn.removeAttribute('href');
+        
+        // Múltiplos event listeners
+        nextBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            nextSlide();
+            return false;
+        }, true);
+        
         nextBtn.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
             nextSlide();
             return false;
         };
-        console.log('✅ Botão NEXT configurado');
+        
+        nextBtn.onmousedown = function(e) {
+            e.preventDefault();
+            return false;
+        };
+        
+        console.log('✅ Botão NEXT configurado com múltiplos listeners');
     }
     
     if (prevBtn) {
+        // Remover qualquer href que possa existir
+        prevBtn.removeAttribute('href');
+        
+        // Múltiplos event listeners
+        prevBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            prevSlide();
+            return false;
+        }, true);
+        
         prevBtn.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
             prevSlide();
             return false;
         };
-        console.log('✅ Botão PREV configurado');
+        
+        prevBtn.onmousedown = function(e) {
+            e.preventDefault();
+            return false;
+        };
+        
+        console.log('✅ Botão PREV configurado com múltiplos listeners');
     }
     
-    // Touch support simples
+    // Touch support
     let startX = 0;
     track.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
@@ -859,7 +895,7 @@ function initializeServicesCarousel() {
     updateCarousel();
     console.log('✅ Carrossel inicializado!');
     
-    // Expor funções globalmente para debug
+    // Expor funções globalmente
     window.carouselNext = nextSlide;
     window.carouselPrev = prevSlide;
 }

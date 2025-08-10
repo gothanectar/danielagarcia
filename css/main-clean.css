@@ -3282,4 +3282,64 @@ l Button Specific Fixes */
     .service-title {
         font-size: 22px;
     }
+}/* 
+===== LOGO NO HEADER ===== */
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.brand-logo {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a365d;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin: 2px 0;
+    line-height: 1.2;
+}
+
+.brand-oab {
+    font-size: 0.625rem;
+    color: #d4af37;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsivo para mobile */
+@media (max-width: 768px) {
+    .brand-logo {
+        height: 40px;
+    }
+    
+    .brand-title {
+        font-size: 1.1rem;
+    }
+    
+    .brand-subtitle {
+        font-size: 0.7rem;
+    }
+    
+    .brand-oab {
+        font-size: 0.6rem;
+    }
 }

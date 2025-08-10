@@ -763,141 +763,114 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// CARROSSEL DEFINITIVO - SEM REDIRECIONAMENTO
+// CARROSSEL SUPER SIMPLES QUE FUNCIONA
 function initializeServicesCarousel() {
     console.log('🎠 Iniciando carrossel...');
     
-    const track = document.querySelector('.services-track');
-    const cards = document.querySelectorAll('.service-card');
-    const prevBtn = document.querySelector('.carousel-prev');
-    const nextBtn = document.querySelector('.carousel-next');
-    
-    if (!track || !cards.length) {
-        console.log('❌ Elementos não encontrados');
-        return;
-    }
-    
-    console.log(`📊 Encontrados ${cards.length} cards`);
-    
-    let currentSlide = 0;
-    const totalSlides = cards.length;
-    
-    function updateCarousel() {
-        const translateX = -currentSlide * 100;
-        track.style.transform = `translateX(${translateX}%)`;
+    // Aguardar DOM estar pronto
+    setTimeout(() => {
+        const track = document.querySelector('.services-track');
+        const cards = document.querySelectorAll('.service-card');
+        const prevBtn = document.querySelector('.carousel-prev');
+        const nextBtn = document.querySelector('.carousel-next');
         
-        console.log(`📍 Slide atual: ${currentSlide + 1}/${totalSlides}`);
+        console.log('Elementos encontrados:', {
+            track: !!track,
+            cards: cards.length,
+            prevBtn: !!prevBtn,
+            nextBtn: !!nextBtn
+        });
         
-        // Atualizar botões
-        if (prevBtn) {
-            prevBtn.style.opacity = currentSlide <= 0 ? '0.5' : '1';
-            prevBtn.disabled = currentSlide <= 0;
+        if (!track || !cards.length || !prevBtn || !nextBtn) {
+            console.log('❌ Elementos não encontrados');
+            return;
         }
-        if (nextBtn) {
+        
+        let currentSlide = 0;
+        const totalSlides = cards.length;
+        
+        console.log(`📊 Total de slides: ${totalSlides}`);
+        
+        function updateCarousel() {
+            const translateX = -currentSlide * 100;
+            track.style.transform = `translateX(${translateX}%)`;
+            
+            console.log(`📍 Movendo para slide ${currentSlide + 1}/${totalSlides}`);
+            
+            // Atualizar botões
+            prevBtn.style.opacity = currentSlide <= 0 ? '0.5' : '1';
             nextBtn.style.opacity = currentSlide >= totalSlides - 1 ? '0.5' : '1';
+            prevBtn.disabled = currentSlide <= 0;
             nextBtn.disabled = currentSlide >= totalSlides - 1;
         }
-    }
-    
-    function nextSlide() {
-        if (currentSlide < totalSlides - 1) {
-            currentSlide++;
-            updateCarousel();
-            console.log('➡️ Próximo slide');
-        }
-    }
-    
-    function prevSlide() {
-        if (currentSlide > 0) {
-            currentSlide--;
-            updateCarousel();
-            console.log('⬅️ Slide anterior');
-        }
-    }
-    
-    // MÚLTIPLOS EVENT LISTENERS para garantir funcionamento
-    if (nextBtn) {
-        // Remover qualquer href que possa existir
-        nextBtn.removeAttribute('href');
         
-        // Múltiplos event listeners
+        function goNext() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateCarousel();
+                console.log('➡️ Próximo slide');
+            } else {
+                console.log('❌ Já está no último slide');
+            }
+        }
+        
+        function goPrev() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+                console.log('⬅️ Slide anterior');
+            } else {
+                console.log('❌ Já está no primeiro slide');
+            }
+        }
+        
+        // Event listeners SIMPLES
         nextBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            e.stopImmediatePropagation();
-            nextSlide();
-            return false;
-        }, true);
+            console.log('🖱️ Clique no botão NEXT');
+            goNext();
+        });
         
-        nextBtn.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            nextSlide();
-            return false;
-        };
-        
-        nextBtn.onmousedown = function(e) {
-            e.preventDefault();
-            return false;
-        };
-        
-        console.log('✅ Botão NEXT configurado com múltiplos listeners');
-    }
-    
-    if (prevBtn) {
-        // Remover qualquer href que possa existir
-        prevBtn.removeAttribute('href');
-        
-        // Múltiplos event listeners
         prevBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            e.stopImmediatePropagation();
-            prevSlide();
-            return false;
-        }, true);
+            console.log('🖱️ Clique no botão PREV');
+            goPrev();
+        });
         
-        prevBtn.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            prevSlide();
-            return false;
-        };
+        // Touch support
+        let startX = 0;
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
         
-        prevBtn.onmousedown = function(e) {
-            e.preventDefault();
-            return false;
-        };
-        
-        console.log('✅ Botão PREV configurado com múltiplos listeners');
-    }
-    
-    // Touch support
-    let startX = 0;
-    track.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-    });
-    
-    track.addEventListener('touchend', (e) => {
-        const endX = e.changedTouches[0].clientX;
-        const diff = startX - endX;
-        
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
-                nextSlide();
-            } else {
-                prevSlide();
+        track.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    goNext();
+                } else {
+                    goPrev();
+                }
             }
-        }
-    });
-    
-    // Inicializar
-    updateCarousel();
-    console.log('✅ Carrossel inicializado!');
-    
-    // Expor funções globalmente
-    window.carouselNext = nextSlide;
-    window.carouselPrev = prevSlide;
+        });
+        
+        // Inicializar
+        updateCarousel();
+        console.log('✅ Carrossel inicializado com sucesso!');
+        
+        // Funções globais para teste
+        window.testNext = goNext;
+        window.testPrev = goPrev;
+        window.testSlide = (n) => {
+            currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
+            updateCarousel();
+        };
+        
+    }, 500); // Aguardar 500ms para garantir que DOM está pronto
 }
 
 // Initialize carousel when DOM is loaded

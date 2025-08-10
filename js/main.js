@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeWhatsApp();
     initializeContactForm();
     initializeScrollAnimations();
-    initializeServicesCarousel();
+    // initializeServicesCarousel(); // Removido - usando carousel-simple.js
 });
 
 // Navigation functionality

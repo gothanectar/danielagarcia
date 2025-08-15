@@ -3425,4 +3425,31 @@ l Button Specific Fixes */
     .brand-oab {
         font-size: 0.6rem;
     }
+}/* ====
+= CRÉDITO DO DESENVOLVEDOR ===== */
+.developer-credit {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+}
+
+.developer-link {
+    color: #d4af37;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.developer-link:hover {
+    color: #f4d03f;
+    text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .developer-credit {
+        font-size: 0.75rem;
+        margin-top: 8px;
+    }
 }

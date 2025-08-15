@@ -3498,4 +3498,56 @@ l Button Specific Fixes */
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+}/
+* ===== FIX CORES CRÉDITO DESENVOLVEDOR ===== */
+.developer-credit {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.developer-credit * {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.developer-link {
+    color: #f4d03f !important;
+    font-weight: 600 !important;
+}
+
+.developer-link:hover {
+    color: #ffffff !important;
+}
+
+.developer-link:visited {
+    color: #f4d03f !important;
+}
+
+/* Mobile - Cores mais claras */
+@media screen and (max-width: 768px) {
+    .developer-credit {
+        color: #ffffff !important;
+    }
+    
+    .developer-credit * {
+        color: #ffffff !important;
+    }
+    
+    .developer-link {
+        color: #f4d03f !important;
+        font-weight: 700 !important;
+    }
+    
+    .developer-link:hover {
+        color: #ffffff !important;
+    }
+}
+
+/* Força cores em todos os seletores */
+.footer .developer-credit,
+.footer-bottom .developer-credit {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.footer .developer-link,
+.footer-bottom .developer-link {
+    color: #f4d03f !important;
 }
